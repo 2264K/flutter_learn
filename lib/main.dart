@@ -63,6 +63,7 @@ class HomePage extends StatelessWidget {
         )
 
     ),*/
+      //과제 2
       appBar: AppBar(
         title: Text('금호동3가'),
         actions: [
@@ -116,7 +117,8 @@ class HomePage extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: Container(
-        color: Colors.white,
+        color: Colors.grey[300],
+        height: 50,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.center,
