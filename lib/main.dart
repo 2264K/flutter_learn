@@ -14,120 +14,121 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(),
+      home: HomePage(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class HomePage extends StatefulWidget {
+  HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  contact(i, currentName) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+            margin: EdgeInsets.fromLTRB(0, 4, 12, 4),
+            child: Icon(Icons.account_circle, size: 50,)),
+        Text(currentName,
+          style: TextStyle(
+              color: Colors.black,
+              fontSize: 24
+          ),
+        ),
+        Expanded(
+          child:
+          Align(
+            alignment: Alignment.centerRight,
+            child: Container(
+              margin: EdgeInsets.fromLTRB(0, 0, 24, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                      margin: EdgeInsets.only(right: 12),
+                      child: Text(likeCount[i].toString())),
+                  TextButton(onPressed: () => incrementLike(i),
+                    style: ButtonStyle(
+                          backgroundColor: WidgetStateProperty.all(Colors.blue),
+                    ),
+                    child: Text('좋아요',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+        )
+      ],
+    );
+  }
+  var a = 1;
+  var name = ['김재민', '이현우', '홍길동'];
+  var likeCount = [0, 0, 0];
+  void incrementLike(int index) {
+    setState(() {
+      likeCount[index]++;
+      print('인덱스 $index의 좋아요: ${likeCount[index]}');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //과제 1
-      /*appBar: AppBar(
-        title: const Text('내 첫 앱'),
-        backgroundColor: Colors.blue,
+      floatingActionButton: FloatingActionButton(
+          onPressed: (){
+            setState(() {
+              a++;
+            });
+          },
+          child: Text(a.toString()),
       ),
-      body: Align(
-        alignment: Alignment.center,
-        child: Container(
-          width: 150, height: 150,
-          margin: EdgeInsets.all(20),
-          padding: EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.black),
-            color: Colors.blue,
-          ),
-          child: Column(
-            children: [
-              Text('안녕',
-                  style: TextStyle( color: Colors.white,fontSize: 24)),
-            ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: SizedBox(
-          height: 50,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(Icons.phone),
-              Icon(Icons.message),
-              Icon(Icons.person),
-            ],
-          ),
-        )
-
-    ),*/
-      //과제 2
       appBar: AppBar(
-        title: Text('금호동3가'),
+        backgroundColor: Colors.blue,
+        title: Text('주소록'),
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.search)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.menu)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.notifications)),],
-        leading: Icon(Icons.keyboard_arrow_down),
+          IconButton(onPressed: () {}, icon: Icon(Icons.add, color: Colors.white, size: 24,)),
+        ],
       ),
-      body: Container(
-        padding: EdgeInsets.fromLTRB(12, 48, 12, 12),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                    width: 100,
-                    child: Image.asset('assets/21935_11819_1319.jpg')),
-                Container(
-                  margin: EdgeInsets.fromLTRB(8, 0, 8, 0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('캐논 DSLR 100D',
-                        style: TextStyle(color: Colors.black, fontSize: 24, fontWeight: FontWeight.w400,),),
-                      Text('#성동구 행당동',
-                        style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w300,),),
-                      Text('210,000원',
-                        style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600,),)
-                    ],
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.bottomRight,
-                  child:
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      IconButton(onPressed: () {}, icon: Icon(Icons.favorite)),
-                      Text('4'),
-                    ],
-                  ),
-                )
-              ],
-            )
-          ],
+      body: ListView.builder(
+        itemCount: 3,
+        itemBuilder: (c, i) {
+          return contact(i, name[i]);
+        }
         ),
-      ),
-      bottomNavigationBar: Container(
-        color: Colors.grey[300],
-        height: 50,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(Icons.description),
-            Icon(Icons.person),
-          ],
-        ),
+      bottomNavigationBar: Bottom(),
+    );
+  }
+}
+//과제3,4
+class Bottom extends StatelessWidget {
+  const Bottom({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomAppBar(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          IconButton(onPressed: () {}, icon: Icon(Icons.call)),
+          IconButton(onPressed: () {}, icon: Icon(Icons.message)),
+          IconButton(onPressed: () {}, icon: Icon(Icons.contact_page)),
+        ],
       ),
     );
   }
 }
+
+//과제3 변수 끝
