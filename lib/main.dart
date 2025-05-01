@@ -96,55 +96,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
           onPressed: (){
             showDialog(context: scfldContext, builder: (context){
-              return Dialog(
-                child: Builder(
-                  builder: (dlgContext) {
-                    final _inputNameController = TextEditingController();
-                    return Container(
-                      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-                      width: MediaQuery.of(scfldContext).size.width*0.8,
-                      height: MediaQuery.of(scfldContext).size.height*0.4,
-                      color: Colors.white,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Contact',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 32,
-                          ),),
-                          TextField(
-                            controller: _inputNameController,
-                            decoration: InputDecoration(enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              ),
-                            ),
-                            hintText: '이름'),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              TextButton(onPressed: (){
-                                Navigator.pop(dlgContext);
-                              }, child: Text('Cancel')),
-                              Container(
-                                padding: EdgeInsets.only(left: 24),
-                                child: TextButton(onPressed: (){
-                                  Navigator.pop(dlgContext);
-                                  addContact(_inputNameController.text);
-                                }, child: Text('OK')),),
-
-                            ],
-                          )
-                        ],
-                      ),
-                    );
-                  }
-                ),
-              );
+              return dialogFloatingButton(contactCount : a, onAddContact: addContact,);
             });
           },
           child: Icon(Icons.add),
@@ -186,4 +138,71 @@ class Bottom extends StatelessWidget {
   }
 }
 
-//과제3 변수 끝
+class dialogFloatingButton extends StatefulWidget {
+  final int contactCount;
+  final void Function(String) onAddContact;
+  const dialogFloatingButton({
+    super.key,
+    required this.contactCount,
+    required this.onAddContact
+  });
+
+  @override
+  State<dialogFloatingButton> createState() => _dialogFloatingButtonState();
+}
+
+class _dialogFloatingButtonState extends State<dialogFloatingButton> {
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Builder(
+          builder: (dlgContext) {
+            final _inputNameController = TextEditingController();
+            return Container(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+              width: MediaQuery.of(context).size.width*0.8,
+              height: MediaQuery.of(context).size.height*0.3,
+              color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Contact',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 32,
+                    ),),
+                  Text('현재 친구 수: ${widget.contactCount}'),
+                  TextField(
+                    controller: _inputNameController,
+                    decoration: InputDecoration(enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey,
+                        width: 1,
+                      ),
+                    ),
+                        hintText: '이름'),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(onPressed: (){
+                        Navigator.pop(dlgContext);
+                      }, child: Text('Cancel')),
+                      Container(
+                        padding: EdgeInsets.only(left: 24),
+                        child: TextButton(onPressed: (){
+                          Navigator.pop(dlgContext);
+                          widget.onAddContact(_inputNameController.text);
+                        }, child: Text('OK')),),
+
+                    ],
+                  )
+                ],
+              ),
+            );
+          }
+      ),
+    );();
+  }
+}
