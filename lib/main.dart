@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage> {
       ],
     );
   }
-  var a = 1;
+  var a = 3;
   var name = ['김재민', '이현우', '홍길동'];
   var likeCount = [0, 0, 0];
   void incrementLike(int index) {
@@ -82,17 +82,72 @@ class _HomePageState extends State<HomePage> {
       print('인덱스 $index의 좋아요: ${likeCount[index]}');
     });
   }
+  void addContact(String addingName) {
+    setState(() {
+      name.add(addingName);
+      likeCount.add(0);
+      a++;
+    });
+  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext scfldContext) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
           onPressed: (){
-            setState(() {
-              a++;
+            showDialog(context: scfldContext, builder: (context){
+              return Dialog(
+                child: Builder(
+                  builder: (dlgContext) {
+                    final _inputNameController = TextEditingController();
+                    return Container(
+                      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                      width: MediaQuery.of(scfldContext).size.width*0.8,
+                      height: MediaQuery.of(scfldContext).size.height*0.4,
+                      color: Colors.white,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Contact',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 32,
+                          ),),
+                          TextField(
+                            controller: _inputNameController,
+                            decoration: InputDecoration(enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.grey,
+                                width: 1,
+                              ),
+                            ),
+                            hintText: '이름'),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TextButton(onPressed: (){
+                                Navigator.pop(dlgContext);
+                              }, child: Text('Cancel')),
+                              Container(
+                                padding: EdgeInsets.only(left: 24),
+                                child: TextButton(onPressed: (){
+                                  Navigator.pop(dlgContext);
+                                  addContact(_inputNameController.text);
+                                }, child: Text('OK')),),
+
+                            ],
+                          )
+                        ],
+                      ),
+                    );
+                  }
+                ),
+              );
             });
           },
-          child: Text(a.toString()),
+          child: Icon(Icons.add),
       ),
       appBar: AppBar(
         backgroundColor: Colors.blue,
@@ -102,7 +157,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: ListView.builder(
-        itemCount: 3,
+        itemCount: a,
         itemBuilder: (c, i) {
           return contact(i, name[i]);
         }
