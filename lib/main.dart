@@ -28,9 +28,11 @@ class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _HomePageState();
 }
-var name = [];
+
+
 
 class _HomePageState extends State<HomePage> {
+  List<Contact> name = [];
   getPermission() async{
     var status = await Permission.contacts.status;
     if (status.isGranted) {
@@ -51,7 +53,7 @@ class _HomePageState extends State<HomePage> {
 
 
   @override
-  Widget build(BuildContext scfldContext) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
@@ -72,10 +74,94 @@ class _HomePageState extends State<HomePage> {
         }
         ),
       bottomNavigationBar: Bottom(),
+        floatingActionButton: FloatingActionButton(onPressed: (){
+          showDialog(context: context, builder: (context){
+            return dialogAddContact(
+              onAdd: (contact) {
+                setState(() {
+                  name.add(contact);
+                });
+              }
+            );
+          });
+        }, child: Icon(Icons.add),)
+    );
+
+  }
+}
+
+class dialogAddContact extends StatefulWidget {
+  final void Function(Contact) onAdd;
+  const dialogAddContact({super.key, required this.onAdd});
+
+  @override
+  _dialogAddContact createState() => _dialogAddContact();
+}
+
+class _dialogAddContact extends State<dialogAddContact> {
+  final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  bool _canSubmit = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController.addListener(_validate);
+    _phoneController.addListener(_validate);
+  }
+
+  void _validate() {
+    final can = _nameController.text.isNotEmpty && _phoneController.text.isNotEmpty;
+    if (can != _canSubmit) {
+      setState(() {
+        _canSubmit = can;
+      });
+    }
+  }
+
+  void _saveContact() async {
+    final contact  = Contact()
+    ..name.first = _nameController.text
+    ..phones = [Phone(_phoneController.text)];
+    final inserted = await FlutterContacts.insertContact(contact);
+    widget.onAdd(inserted);
+    print(contact.displayName);
+    print(inserted.displayName);
+    Navigator.pop(context);
+}
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Padding(padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Text('Add Contact'),
+            TextField(
+              controller: _nameController,
+              decoration: InputDecoration(labelText: 'Name'),
+            ),
+            TextField(
+              controller: _phoneController,
+              decoration: InputDecoration(labelText: 'Phone Number'),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(onPressed: () {
+                  Navigator.pop(context);
+                }, child: Text('cancel')),
+                TextButton(onPressed: _canSubmit ? _saveContact : null, child: Text('OK', style: TextStyle(color: Colors.lightBlueAccent),))
+              ],
+            )
+          ],
+        ),),
     );
   }
 }
-//과제3,4
+
+//앱 하단
 class Bottom extends StatelessWidget {
   const Bottom({super.key});
 
